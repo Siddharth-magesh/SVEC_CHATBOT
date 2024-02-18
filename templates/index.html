@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Chatbot</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .header {
+            width: 1485px;
+            position: fixed;
+            z-index: 999;
+            /*background-color: #007bff;*/
+            background-image: linear-gradient(to bottom right, #70C1B3, #247B9F );
+            text-align: center;
+            color: #fff;
+            top: 37px;
+            left: 20px;
+            border-radius: 7px;
+        }
+
+        .chat-container {
+            width: 100%;
+            height: 750px;
+            display: flex;
+            justify-content: center;
+            font-size: 60px;
+            align-items: center;
+            position: relative;
+        }
+
+        .chat-content{
+            padding: 70px;
+            font-size: 20px;
+            margin-left: -60px;
+        }
+
+        .chat-box {
+            width: 1500px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow-y: scroll;
+            padding: 20px;
+            box-sizing: border-box;
+            height: calc(100% - 70px);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px violet, 0 0 20px violet, 0 0 30px violet; /* Initial glow effect */
+            }
+            100% {
+                box-shadow: 0 0 20px blueviolet, 0 0 30px blueviolet, 0 0 40px blueviolet ; /* Final glow effect */
+            }
+        }
+
+        .chat-content {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 34cm;
+            padding: 20px;
+            margin-right: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            outline: none;
+            position: absolute;
+            top: 640px;
+        }
+
+        button {
+            padding: 20px;
+            border: none;
+            width: 3cm;
+            /*background-color: #007bff;*/
+            background-image: linear-gradient(to bottom right, #70C1B3, #247B9F );
+            color: #fff;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            position: absolute;
+            left: 1365px;
+            top: 640px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AGRIBOT</h1>
+    </div>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="chat-content" id="chat-content"></div>
+                <form action="/chatbot" method="post">
+                    <input type="text" id="user-input" name="chatname" placeholder="Type your message...">
+                    <button id="send-btn">Send</button>
+                </form>
+                <div id="result">
+                    <p>{{ text }} </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Function to send a message to the chatbot
+function sendMessage(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const userInput = document.getElementById('user-input');
+    const message = userInput.value.trim(); // Get user input
+
+    if (message !== '') {
+        appendMessage('user', message); // Display user message
+
+        // Send user message to server (replace with your actual endpoint)
+        fetch('/chatbot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            appendMessage('bot', data.result); // Display chatbot response
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        userInput.value = ''; // Clear input field
+    }
+}
+
+// Function to append a message to the chat content
+function appendMessage(sender, message) {
+    const chatContent = document.getElementById('chat-content');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add(sender);
+    messageDiv.textContent = message;
+    chatContent.appendChild(messageDiv);
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+
+// Event listener for form submission
+const form = document.getElementById('user-input-form');
+form.addEventListener('submit', sendMessage);
+
+    </script>
+</body>
+</html>

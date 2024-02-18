@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        #upload-form {
+            margin-bottom: 20px;
+        }
+
+        #preview-container {
+            margin-top: 20px;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+<body>
+    <h2>Upload an Image</h2>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="image-input" accept="image/*">
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="preview-container">
+        <h3>Preview:</h3>
+        <img id="preview-image" src="#" alt="Preview Image">
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const fileInput = document.getElementById('image-input');
+            const previewImage = document.getElementById('preview-image');
+
+            // Check if a file is selected
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result; // Set the preview image source
+                };
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                alert('Please select an image.');
+            }
+        });
+    </script>
+</body>
+</html>
